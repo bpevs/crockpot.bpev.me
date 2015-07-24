@@ -12,6 +12,7 @@ server.get('/:sessionId', function(req, res) {
   sessionHelpers('READ', { id: req.params.sessionId }, function(err, session) {
     if(!session) {
       sessionHelpers('CREATE', { id: req.params.sessionId }, function(err, session) {
+        console.log('new session:', session.id);
       });
     }
     res.sendFile(path.join(__dirname, './public/code.html'));

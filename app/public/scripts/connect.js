@@ -6,14 +6,14 @@ window.onload = function() {
     socket.emit('edit', {id: pathname, text: textBox.value});
   });
 
-  var socket = io.connect('http://localhost:2000');
+  var socket = io.connect(window.location.host);
 
   socket.on('connect', function() {
     socket.emit('init', {id: pathname});
   });
 
   socket.on('change', function(data) {
-    if(data.id === pathname){
+    if(data && data.id === pathname){
       document.getElementById('text').value = data.text;
     }
   });

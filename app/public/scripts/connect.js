@@ -1,7 +1,7 @@
 window.onload = function() {
   var textBox = document.getElementById('text');
   var pathname = window.location.pathname.substring(1);
-  console.log(pathname);
+
   textBox.addEventListener('input', function() {
     socket.emit('edit', {id: pathname, text: textBox.value});
   });

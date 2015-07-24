@@ -34,7 +34,6 @@ io.sockets.on('connection', function(socket) {
     sessionHelpers('UPDATE', data, function(err, result) {
       if(result){
         socket.broadcast.emit('change', result);
-        socket.emit('change', result);
       }
     });
   });

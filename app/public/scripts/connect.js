@@ -13,9 +13,8 @@ window.onload = function() {
   });
 
   socket.on('change', function(data) {
-    console.log(data.id, pathname);
     if(data.id === pathname){
-      document.getElementById('code').innerHTML = data.text;
+      document.getElementById('text').value = data.text;
     }
   });
 }

@@ -24,7 +24,7 @@ describe('Restful Routes', function() {
     request('http://localhost:2000/fsdax', function(error, response, body) {
       expect(!error).to.equal(true);
       expect(response.statusCode).to.equal(200);
-      expect(body).includes('<p id="code"></p>');
+      expect(body).includes('<textarea id="text"></textarea>');
       done();
     });
   });

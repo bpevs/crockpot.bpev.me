@@ -12,9 +12,9 @@ DROP TABLE IF EXISTS "sessions";
 -- ---
 
 CREATE TABLE sessions (
-  "session_id" TEXT,
+  "id" TEXT,
   "text" TEXT,
   "syntax" TEXT,
   "color" TEXT,
-  PRIMARY KEY ("session_id")
+  PRIMARY KEY ("id")
 );

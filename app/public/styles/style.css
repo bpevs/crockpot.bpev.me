@@ -1,3 +1,8 @@
+@font-face {
+  font-family: 'Inconsolata';
+  src: url('fonts/Inconsolata-Regular.ttf');
+}
+
 #text {
   position: absolute;
   background: #272822;

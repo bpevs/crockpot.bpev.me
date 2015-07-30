@@ -1,10 +1,31 @@
 <html>
   <head>
-    <link rel="stylesheet" type="text/css" href="styles/style.css" />
+    <link rel="stylesheet" type="text/css" href="/styles/style.css" />
+    <link rel="stylesheet" type="text/css" href="/lib/codemirror/codemirror.css" />
+    <link rel="stylesheet" type="text/css" href="https://codemirror.net/theme/base16-dark.css" />
   </head>
   <body>
-    <textarea id="text"></textarea>
+    <div id="options">
+      <span class="dropdown">
+        <select id="syntax" name="syntax-options">
+          <option value="text">text</option>
+          <option value="javascript">javascript</option>
+          <option value="python">python</option>
+        </select>
+      </span>
+      <span class="dropdown">
+        <select id="color" name="color-options">
+          <option value="default">default</option>
+          <option value="base16-dark">base16-dark</option>
+        </select>
+      </span>
+    </div>
+    <div id="text"></div>
+
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/lib/codemirror/codemirror.js"></script>
+    <script src="/lib/codemirror/mode/javascript/javascript.js"></script>
+    <script src="/lib/codemirror/mode/python/python.js"></script>
     <script src="/scripts/connect.js"></script>
   </body>
 </html>

@@ -25,17 +25,27 @@ io = io.listen(server);
 io.sockets.on('connection', function(socket) {
 
   socket.on('init', function(data) {
-    sessionHelpers('READ', data,function(err, result) {
-      socket.emit('change', result);
+    sessionHelpers('READ', data, function(err, result) {
+      socket.emit('init', {id: data.id, text: result.text || '', syntax: result.syntax || 'text'});
     });
   });
 
-  socket.on('edit', function(data) {
-    sessionHelpers('UPDATE', data, function(err, result) {
-      if(result){
-        socket.broadcast.emit('change', result);
+  socket.on('save', function(data) {
+    sessionHelpers('UPDATE', data, function(){});
+  });
+
+  socket.on('change', function(data) {
+    if(data.change){
+      if (data.change.origin === '+input' || data.change.origin === 'paste' ||
+          data.change.origin === '+delete' || data.change.origin === 'cut' ||
+          data.change.origin === 'undo' || data.change.origin === 'redo') {
+        socket.broadcast.emit('change',  {id: data.id, change: data.change});
       }
-    });
+    }
+    if(data.syntax) {
+      sessionHelpers('UPDATE', data, function(){});
+      socket.broadcast.emit('change',  {id: data.id, syntax: data.syntax});
+    }
   });
 });
 

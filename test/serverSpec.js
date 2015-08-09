@@ -1,30 +1,40 @@
 var expect = require('chai').expect;
-var request = require('request');
+var request = require('supertest');
+var server = require('../app/server.js');
 
 describe('Restful Routes', function() {
 
   it('should serve index.html', function(done) {
-    request('http://localhost:2000', function(error, response, body) {
-      expect(!error).to.equal(true);
-      expect(response.statusCode).to.equal(200);
-      expect(body).includes('<script src="scripts/main.js"></script>');
+    request(server)
+      .get('/')
+      .expect('Content-Type', /html/)
+      .expect(200)
+      .expect(/<script src="scripts\/main\.js"><\/script>/)
+      .end(function(error, response) {
+      if(error){ return done(error); }
       done();
     });
   });
 
   it('should serve static files', function(done) {
-    request('http://localhost:2000/scripts/connect.js', function(error, response, body) {
-      expect(!error).to.equal(true);
-      expect(response.statusCode).to.equal(200);
+    request(server)
+      .get('/scripts/connect.js')
+      .expect(200)
+      .expect('Content-Type', /javascript/)
+      .end(function(error, response) {
+      if(error){ throw error; }
       done();
     });
   });
 
   it('should serve code.html', function(done) {
-    request('http://localhost:2000/fsdax', function(error, response, body) {
-      expect(!error).to.equal(true);
-      expect(response.statusCode).to.equal(200);
-      expect(body).includes('<div id="text"></div>');
+    request('http://localhost:2000/fsdax')
+      .get('/')
+      .expect('Content-Type', /html/)
+      .expect(200)
+      .expect(/<div id="text"><\/div>/)
+      .end(function(error, response) {
+      if(error){ return done(error); }
       done();
     });
   });

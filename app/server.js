@@ -50,3 +50,4 @@ io.sockets.on('connection', function(socket) {
 });
 
 server.listen(port, console.log.bind(this, 'listening on port', port));
+module.exports = server;

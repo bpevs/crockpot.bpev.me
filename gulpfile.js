@@ -10,10 +10,12 @@ gulp.task('jshint', function() {
 
 gulp.task('mocha', function() {
   return gulp.src('./test/*.js')
-    .pipe(mocha());
+    .pipe(mocha())
+    .once('error', process.exit.bind(null, 1))
+    .once('end', process.exit.bind(null, 1));
 });
 
-gulp.task('nodemon', ['test'], function () {
+gulp.task('nodemon', function () {
   nodemon({
     script: 'app/server.js',
     ext: 'js',

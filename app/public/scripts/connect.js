@@ -26,28 +26,27 @@ window.onload = function() {
         socket.emit('save', {id: pathname, text: editor.getValue()});
       }
     });
-  });
+    socket.on('change', function(data) {
+      if(data && data.change && data.id === pathname) {
+        editor.replaceRange(data.change.text, data.change.from, data.change.to);
+      }
+      if(data && data.syntax) {
+        editor.setOption('mode', data.syntax);
+        document.getElementById('syntax').value = data.syntax || 'text';
+      }
+    });
 
-  socket.on('change', function(data) {
-    if(data && data.change && data.id === pathname) {
-      editor.replaceRange(data.change.text, data.change.from, data.change.to);
-    }
-    if(data && data.syntax) {
-      editor.setOption('mode', data.syntax);
-      document.getElementById('syntax').value = data.syntax || 'text';
-    }
-  });
+    document.getElementById('syntax').addEventListener('change', function() {
+      var syntax = document.getElementById('syntax').value;
+      socket.emit('change', {id: pathname, syntax: syntax});
+      editor.setOption('mode', syntax);
+    });
 
-  document.getElementById('syntax').addEventListener('change', function() {
-    var syntax = document.getElementById('syntax').value;
-    socket.emit('change', {id: pathname, syntax: syntax});
-    editor.setOption('mode', syntax);
-  });
-
-  document.getElementById('color').addEventListener('change', function() {
-    var color = document.getElementById('color').value;
-    window.localStorage.setItem('color', color);
-    editor.setOption('theme', color);
+    document.getElementById('color').addEventListener('change', function() {
+      var color = document.getElementById('color').value;
+      window.localStorage.setItem('color', color);
+      editor.setOption('theme', color);
+    });
   });
 }
 

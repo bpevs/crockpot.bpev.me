@@ -1,5 +1,5 @@
 module.exports = {
   database: {
-    url: 'http://localhost:1234'
+    url: 'http://localhost:5432'
   }
 };

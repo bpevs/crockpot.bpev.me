@@ -10,12 +10,12 @@ window.onload = function() {
   socket.on('init', function(data) {
 
     document.getElementById('syntax').value = data.syntax || 'text';
-    document.getElementById('color').value = window.localStorage.getItem('color');
+    document.getElementById('color').value = window.localStorage.getItem('color') || 'default';
 
     editor = CodeMirror(document.getElementById('text'), {
       lineNumbers: true,
       mode: data.syntax || 'text',
-      theme: window.localStorage.getItem('color'),
+      theme: window.localStorage.getItem('color') || 'default',
       tabSize: 2
     });
     editor.setValue(data.text);

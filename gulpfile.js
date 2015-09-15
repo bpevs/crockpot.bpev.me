@@ -24,4 +24,4 @@ gulp.task('nodemon', function () {
 });
 
 gulp.task('test', ['jshint', 'mocha']);
-gulp.task('default', ['test', 'nodemon']);
+gulp.task('default', ['nodemon']);

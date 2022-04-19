@@ -1,0 +1,109 @@
+<html>
+  <head>
+    <title>Coding Crock-Pot</title>
+    <meta charSet="utf-8" />
+    <meta name="description" content="Write, edit, and share code snippets in real-time!" />
+    <meta httpEquiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=0, width=device-width" />
+    <meta NAME="robots" CONTENT="noindex">
+    <link rel="stylesheet" type="text/css" href="/styles/style.css" />
+    <link rel="stylesheet" type="text/css" href="/lib/codemirror/codemirror.css" />
+
+    <link rel="stylesheet" href="/lib/codemirror/theme/base16-dark.css">
+    <link rel="stylesheet" href="/lib/codemirror/theme/base16-light.css">
+    <link rel="stylesheet" href="/lib/codemirror/theme/cobalt.css">
+    <link rel="stylesheet" href="/lib/codemirror/theme/colorforth.css">
+    <link rel="stylesheet" href="/lib/codemirror/theme/dracula.css">
+    <link rel="stylesheet" href="/lib/codemirror/theme/erlang-dark.css">
+    <link rel="stylesheet" href="/lib/codemirror/theme/icecoder.css">
+    <link rel="stylesheet" href="/lib/codemirror/theme/lesser-dark.css">
+    <link rel="stylesheet" href="/lib/codemirror/theme/material.css">
+    <link rel="stylesheet" href="/lib/codemirror/theme/mbo.css">
+    <link rel="stylesheet" href="/lib/codemirror/theme/mdn-like.css">
+    <link rel="stylesheet" href="/lib/codemirror/theme/midnight.css">
+    <link rel="stylesheet" href="/lib/codemirror/theme/monokai.css">
+    <link rel="stylesheet" href="/lib/codemirror/theme/neo.css">
+    <link rel="stylesheet" href="/lib/codemirror/theme/paraiso-dark.css">
+    <link rel="stylesheet" href="/lib/codemirror/theme/paraiso-light.css">
+    <link rel="stylesheet" href="/lib/codemirror/theme/pastel-on-dark.css">
+    <link rel="stylesheet" href="/lib/codemirror/theme/seti.css">
+    <link rel="stylesheet" href="/lib/codemirror/theme/solarized.css">
+    <link rel="stylesheet" href="/lib/codemirror/theme/tomorrow-night-bright.css">
+    <link rel="stylesheet" href="/lib/codemirror/theme/tomorrow-night-eighties.css">
+    <link rel="stylesheet" href="/lib/codemirror/theme/ttcn.css">
+    <link rel="stylesheet" href="/lib/codemirror/theme/twilight.css">
+    <link rel="stylesheet" href="/lib/codemirror/theme/zenburn.css">
+  </head>
+  <body>
+    <div id="options">
+      <span class="dropdown">
+        <select id="syntax" name="syntax-options">
+          <option selected="selected" value="text">text</option>
+          <option value="clike">clike</option>
+          <option value="clojure">clojure</option>
+          <option value="css">css</option>
+          <option value="coffeescript">coffeescript</option>
+          <option value="erlang">erlang</option>
+          <option value="javascript">javascript</option>
+          <option value="markdown">markdown</option>
+          <option value="python">python</option>
+          <option value="ruby">ruby</option>
+          <option value="rust">rust</option>
+          <option value="sass">sass</option>
+          <option value="smalltalk">smalltalk</option>
+          <option value="sql">sql</option>
+          <option value="swift">swift</option>
+        </select>
+      </span>
+      <span class="dropdown">
+        <select id="color" name="color-options">
+          <option selected="selected">default</option>
+          <option>base16-dark</option>
+          <option>base16-light</option>
+          <option>cobalt</option>
+          <option>colorforth</option>
+          <option>dracula</option>
+          <option>erlang-dark</option>
+          <option>icecoder</option>
+          <option>lesser-dark</option>
+          <option>material</option>
+          <option>mbo</option>
+          <option>mdn-like</option>
+          <option>midnight</option>
+          <option>monokai</option>
+          <option>neo</option>
+          <option>paraiso-dark</option>
+          <option>paraiso-light</option>
+          <option>pastel-on-dark</option>
+          <option>seti</option>
+          <option>solarized dark</option>
+          <option>solarized light</option>
+          <option>tomorrow-night-bright</option>
+          <option>tomorrow-night-eighties</option>
+          <option>ttcn</option>
+          <option>twilight</option>
+          <option>zenburn</option>
+        </select>
+      </span>
+    </div>
+    <div id="text"></div>
+
+    <script src="/lib/codemirror/codemirror.js"></script>
+
+    <script src="/lib/codemirror/mode/clike/clike.js"></script>
+    <script src="/lib/codemirror/mode/clojure/clojure.js"></script>
+    <script src="/lib/codemirror/mode/css/css.js"></script>
+    <script src="/lib/codemirror/mode/coffeescript/coffeescript.js"></script>
+    <script src="/lib/codemirror/mode/erlang/erlang.js"></script>
+    <script src="/lib/codemirror/mode/javascript/javascript.js"></script>
+    <script src="/lib/codemirror/mode/markdown/markdown.js"></script>
+    <script src="/lib/codemirror/mode/python/python.js"></script>
+    <script src="/lib/codemirror/mode/ruby/ruby.js"></script>
+    <script src="/lib/codemirror/mode/rust/rust.js"></script>
+    <script src="/lib/codemirror/mode/sass/sass.js"></script>
+    <script src="/lib/codemirror/mode/smalltalk/smalltalk.js"></script>
+    <script src="/lib/codemirror/mode/sql/sql.js"></script>
+    <script src="/lib/codemirror/mode/swift/swift.js"></script>
+    <script async src="/scripts/connect.js"></script>
+  </body>
+</html>

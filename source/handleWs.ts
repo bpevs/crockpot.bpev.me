@@ -39,7 +39,7 @@ export default function handleWebSockets(socket: WebSocket) {
           method: CLIENT.INIT,
           sessionId: queryResponse.id,
           text: queryResponse.text,
-          syntax: queryResponse.syntax || "text"
+          syntax: queryResponse.syntax || "text",
         }));
 
       case CLIENT.SAVE:

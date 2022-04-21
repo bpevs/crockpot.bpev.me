@@ -13,29 +13,30 @@ const pool = new Pool({
   user: Deno.env.get("DB_USER"),
 }, POOL_CONNECTIONS);
 
-// Connect to the database
-const client = await pool.connect();
+export async function createTable() {
+  const client = await pool.connect();
 
-try {
-  await client.queryObject`
-    -- ---
-    -- Drop old tables. We want to reset data on release.
-    -- ---
-    DROP TABLE IF EXISTS "sessions";
+  try {
+    await client.queryObject`
+      -- ---
+      -- Drop old tables. We want to reset data on release.
+      -- ---
+      DROP TABLE IF EXISTS "sessions";
 
-    -- ---
-    -- Sessions Table
-    -- ---
-    CREATE TABLE sessions (
-      "id" TEXT,
-      "text" TEXT,
-      "syntax" TEXT,
-      PRIMARY KEY ("id")
-    );
-  `;
-} finally {
-  // Release the client back into the pool
-  client.release();
+      -- ---
+      -- Sessions Table
+      -- ---
+      CREATE TABLE sessions (
+        "id" TEXT,
+        "text" TEXT,
+        "syntax" TEXT,
+        PRIMARY KEY ("id")
+      );
+    `;
+  } finally {
+    // Release the client back into the pool
+    client.release();
+  }
 }
 
 export async function clearSessions() {

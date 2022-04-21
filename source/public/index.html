@@ -9,11 +9,13 @@
     <link rel="stylesheet" type="text/css" href="/styles/style.css" />
   </head>
   <body>
+    <script src="/scripts/wordlist.js"></script>
     <script>
-      function randomLink() {
-        return ("0000" + (Math.random()*Math.pow(36,6) << 0).toString(36)).slice(-6);
+      function randomWord() {
+        return window.words[Math.floor(Math.random() * window.words.length)];
       };
-      window.location.pathname = '/' + randomLink();
+      const id = [randomWord(), randomWord()].join("-");
+      window.location.pathname = '/' + id;
     </script>
     <noscript>To use the Coding Crock-Pot, Javascript must be enabled!</noscript>
   </body>

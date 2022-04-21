@@ -1,4 +1,4 @@
-import { v4 } from "https://deno.land/std@0.136.0/uuid/mod.ts";
+import { v4 } from "std/uuid";
 
 import {
   CLIENT_EVENT_METHOD as CLIENT,
@@ -27,10 +27,9 @@ export default function handleWebSockets(socket: WebSocket) {
   socket.onmessage = async (event: MessageEvent<string>) => {
     let currUser: User | void;
     const { change, method, sessionId, syntax, text } = JSON.parse(event.data);
-    console.log("MESSAGE", method, ":", sessionId);
 
     switch (method) {
-      case CLIENT.INIT:
+      case CLIENT.INIT: {
         currUser = { userId: currUserId, sessionId, socket };
         usersMap.set(currUserId, currUser);
 
@@ -41,11 +40,12 @@ export default function handleWebSockets(socket: WebSocket) {
           text: queryResponse.text,
           syntax: queryResponse.syntax || "text",
         }));
+      }
 
       case CLIENT.SAVE:
         return queryDB({ method: DB.UPDATE, sessionId, text, syntax });
 
-      case CLIENT.CHANGE:
+      case CLIENT.CHANGE: {
         const changeResp: ClientEvent = { method: CLIENT.CHANGE, sessionId };
 
         if (updateOrigins.includes(change?.origin)) changeResp.change = change;
@@ -63,6 +63,7 @@ export default function handleWebSockets(socket: WebSocket) {
             }
           }
         }
+      }
     }
   };
 }

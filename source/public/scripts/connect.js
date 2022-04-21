@@ -1,7 +1,7 @@
 window.onload = function () {
   const location = document.location;
-  let scheme = 'ws';
-  if (location.protocol === 'https:') scheme += 's';
+  let scheme = "ws";
+  if (location.protocol === "https:") scheme += "s";
 
   const serverUrl = `${scheme}://${location.hostname}:${location.port}`;
   const socket = new WebSocket(serverUrl);
@@ -21,7 +21,6 @@ window.onload = function () {
 
   socket.onmessage = (event) => {
     const { method, sessionId, syntax, text, change } = JSON.parse(event.data);
-    console.log("MESSAGE: ", method);
 
     if (method === "INIT") {
       el.syntax.value = syntax || "text";
@@ -36,7 +35,7 @@ window.onload = function () {
 
       editor.setValue(text || "");
 
-      editor.on("change", (mirror, change) => {
+      editor.on("change", (_, change) => {
         if (change.origin !== undefined && change.origin !== "setValue") {
           socket.send(JSON.stringify({ method: "CHANGE", sessionId, change }));
           socket.send(
@@ -60,7 +59,7 @@ window.onload = function () {
         editor.setOption("mode", el.syntax.value);
       });
 
-      el.color.addEventListener("change", (event) => {
+      el.color.addEventListener("change", () => {
         window.localStorage.setItem("color", el.color.value);
         editor.setOption("theme", el.color.value);
       });

@@ -1,10 +1,7 @@
-import "https://deno.land/x/dotenv/load.ts";
-import { Pool } from "https://deno.land/x/postgres/mod.ts";
-import {
-  DB_EVENT_METHOD as DB,
-  DbEvent,
-  DbResponse,
-} from "./constants.ts";
+import "dotenv";
+import { Pool } from "postgres";
+
+import { DB_EVENT_METHOD as DB, DbEvent, DbResponse } from "./constants.ts";
 
 const POOL_CONNECTIONS = 3;
 
@@ -52,7 +49,6 @@ export async function clearSessions() {
 
 export async function queryDB(params: DbEvent): Promise<DbResponse> {
   const { method, sessionId: id, text, syntax } = params;
-  console.log("DB", method, ": ", id);
   const client = await pool.connect();
 
   const queries: Record<DB, string | null> = {
@@ -73,7 +69,11 @@ export async function queryDB(params: DbEvent): Promise<DbResponse> {
     if (syntax) query += ` syntax = $SYNTAX,`;
     if (text || syntax) query = query.substring(0, query.length - 1) + " ";
     query += `WHERE id = $ID RETURNING *;`;
-    const result = await client.queryObject<DbResponse>(query, { id, text, syntax });
+    const result = await client.queryObject<DbResponse>(query, {
+      id,
+      text,
+      syntax,
+    });
     client.release();
     return result.rows[0];
   } else {

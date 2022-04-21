@@ -24,10 +24,22 @@ export enum CLIENT_EVENT_METHOD {
   SAVE = "SAVE", // save: write updates to db (write to db)
 }
 
+interface CodeMirrorPosition {
+  line: number;
+  ch: number;
+}
+
+interface CodeMirrorChange {
+  from: CodeMirrorPosition;
+  to: CodeMirrorPosition;
+  text: string[];
+  origin: string;
+}
+
 export interface ClientEvent {
   method: CLIENT_EVENT_METHOD;
   sessionId: string;
-  change?: any; // some obj defined by codemirror
+  change?: CodeMirrorChange; // some obj defined by codemirror
   syntax?: string;
   text?: string;
 }

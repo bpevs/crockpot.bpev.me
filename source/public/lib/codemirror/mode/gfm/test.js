@@ -1,247 +1,198 @@
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: http://codemirror.net/LICENSE
+// Distributed under an MIT license: https://codemirror.net/LICENSE
 
-(function () {
-  var mode = CodeMirror.getMode({ tabSize: 4 }, "gfm");
-  function MT(name) {
-    test.mode(name, mode, Array.prototype.slice.call(arguments, 1));
-  }
-  var modeHighlightFormatting = CodeMirror.getMode({ tabSize: 4 }, {
-    name: "gfm",
-    highlightFormatting: true,
-  });
-  function FT(name) {
-    test.mode(
-      name,
-      modeHighlightFormatting,
-      Array.prototype.slice.call(arguments, 1),
-    );
-  }
+(function() {
+  var config = {tabSize: 4, indentUnit: 2}
+  var mode = CodeMirror.getMode(config, "gfm");
+  function MT(name) { test.mode(name, mode, Array.prototype.slice.call(arguments, 1)); }
+  var modeHighlightFormatting = CodeMirror.getMode(config, {name: "gfm", highlightFormatting: true});
+  function FT(name) { test.mode(name, modeHighlightFormatting, Array.prototype.slice.call(arguments, 1)); }
 
-  FT(
-    "codeBackticks",
-    "[comment&formatting&formatting-code `][comment foo][comment&formatting&formatting-code `]",
-  );
+  FT("codeBackticks",
+     "[comment&formatting&formatting-code `][comment foo][comment&formatting&formatting-code `]");
 
-  FT(
-    "doubleBackticks",
-    "[comment&formatting&formatting-code ``][comment foo ` bar][comment&formatting&formatting-code ``]",
-  );
+  FT("doubleBackticks",
+     "[comment&formatting&formatting-code ``][comment foo ` bar][comment&formatting&formatting-code ``]");
 
-  FT(
-    "codeBlock",
-    "[comment&formatting&formatting-code-block ```css]",
-    "[tag foo]",
-    "[comment&formatting&formatting-code-block ```]",
-  );
+  FT("taskList",
+     "[variable-2&formatting&formatting-list&formatting-list-ul - ][meta&formatting&formatting-task [ ]]][variable-2  foo]",
+     "[variable-2&formatting&formatting-list&formatting-list-ul - ][property&formatting&formatting-task [x]]][variable-2  foo]");
 
-  FT(
-    "taskList",
-    "[variable-2&formatting&formatting-list&formatting-list-ul - ][meta&formatting&formatting-task [ ]]][variable-2  foo]",
-    "[variable-2&formatting&formatting-list&formatting-list-ul - ][property&formatting&formatting-task [x]]][variable-2  foo]",
-  );
+  FT("formatting_strikethrough",
+     "[strikethrough&formatting&formatting-strikethrough ~~][strikethrough foo][strikethrough&formatting&formatting-strikethrough ~~]");
 
-  FT(
-    "formatting_strikethrough",
-    "[strikethrough&formatting&formatting-strikethrough ~~][strikethrough foo][strikethrough&formatting&formatting-strikethrough ~~]",
-  );
+  FT("formatting_strikethrough",
+     "foo [strikethrough&formatting&formatting-strikethrough ~~][strikethrough bar][strikethrough&formatting&formatting-strikethrough ~~]");
 
-  FT(
-    "formatting_strikethrough",
-    "foo [strikethrough&formatting&formatting-strikethrough ~~][strikethrough bar][strikethrough&formatting&formatting-strikethrough ~~]",
-  );
+  FT("formatting_emoji",
+     "foo [builtin&formatting&formatting-emoji :smile:] foo");
 
-  MT("emInWordAsterisk", "foo[em *bar*]hello");
+  MT("emInWordAsterisk",
+     "foo[em *bar*]hello");
 
-  MT("emInWordUnderscore", "foo_bar_hello");
+  MT("emInWordUnderscore",
+     "foo_bar_hello");
 
-  MT("emStrongUnderscore", "[strong __][em&strong _foo__][em _] bar");
+  MT("emStrongUnderscore",
+     "[em&strong ___foo___] bar");
 
-  MT(
-    "fencedCodeBlocks",
-    "[comment ```]",
-    "[comment foo]",
-    "",
-    "[comment ```]",
-    "bar",
-  );
+  MT("taskListAsterisk",
+     "[variable-2 * ][link&variable-2 [[]]][variable-2 foo]", // Invalid; must have space or x between []
+     "[variable-2 * ][link&variable-2 [[ ]]][variable-2 bar]", // Invalid; must have space after ]
+     "[variable-2 * ][link&variable-2 [[x]]][variable-2 hello]", // Invalid; must have space after ]
+     "[variable-2 * ][meta [ ]]][variable-2  ][link&variable-2 [[world]]]", // Valid; tests reference style links
+     "    [variable-3 * ][property [x]]][variable-3  foo]"); // Valid; can be nested
 
-  MT(
-    "fencedCodeBlockModeSwitching",
-    "[comment ```javascript]",
-    "[variable foo]",
-    "",
-    "[comment ```]",
-    "bar",
-  );
+  MT("taskListPlus",
+     "[variable-2 + ][link&variable-2 [[]]][variable-2 foo]", // Invalid; must have space or x between []
+     "[variable-2 + ][link&variable-2 [[x]]][variable-2 hello]", // Invalid; must have space after ]
+     "[variable-2 + ][meta [ ]]][variable-2  ][link&variable-2 [[world]]]", // Valid; tests reference style links
+     "    [variable-3 + ][property [x]]][variable-3  foo]"); // Valid; can be nested
 
-  MT(
-    "taskListAsterisk",
-    "[variable-2 * []] foo]", // Invalid; must have space or x between []
-    "[variable-2 * [ ]]bar]", // Invalid; must have space after ]
-    "[variable-2 * [x]]hello]", // Invalid; must have space after ]
-    "[variable-2 * ][meta [ ]]][variable-2  [world]]]", // Valid; tests reference style links
-    "    [variable-3 * ][property [x]]][variable-3  foo]",
-  ); // Valid; can be nested
+  MT("taskListDash",
+     "[variable-2 - ][link&variable-2 [[]]][variable-2 foo]", // Invalid; must have space or x between []
+     "[variable-2 - ][link&variable-2 [[x]]][variable-2 hello]", // Invalid; must have space after ]
+     "[variable-2 - ][meta [ ]]][variable-2  world]", // Valid; tests reference style links
+     "    [variable-3 - ][property [x]]][variable-3  foo]"); // Valid; can be nested
 
-  MT(
-    "taskListPlus",
-    "[variable-2 + []] foo]", // Invalid; must have space or x between []
-    "[variable-2 + [ ]]bar]", // Invalid; must have space after ]
-    "[variable-2 + [x]]hello]", // Invalid; must have space after ]
-    "[variable-2 + ][meta [ ]]][variable-2  [world]]]", // Valid; tests reference style links
-    "    [variable-3 + ][property [x]]][variable-3  foo]",
-  ); // Valid; can be nested
+  MT("taskListNumber",
+     "[variable-2 1. ][link&variable-2 [[]]][variable-2 foo]", // Invalid; must have space or x between []
+     "[variable-2 2. ][link&variable-2 [[ ]]][variable-2 bar]", // Invalid; must have space after ]
+     "[variable-2 3. ][meta [ ]]][variable-2  world]", // Valid; tests reference style links
+     "    [variable-3 1. ][property [x]]][variable-3  foo]"); // Valid; can be nested
 
-  MT(
-    "taskListDash",
-    "[variable-2 - []] foo]", // Invalid; must have space or x between []
-    "[variable-2 - [ ]]bar]", // Invalid; must have space after ]
-    "[variable-2 - [x]]hello]", // Invalid; must have space after ]
-    "[variable-2 - ][meta [ ]]][variable-2  [world]]]", // Valid; tests reference style links
-    "    [variable-3 - ][property [x]]][variable-3  foo]",
-  ); // Valid; can be nested
+  MT("SHA",
+     "foo [link be6a8cc1c1ecfe9489fb51e4869af15a13fc2cd2] bar");
 
-  MT(
-    "taskListNumber",
-    "[variable-2 1. []] foo]", // Invalid; must have space or x between []
-    "[variable-2 2. [ ]]bar]", // Invalid; must have space after ]
-    "[variable-2 3. [x]]hello]", // Invalid; must have space after ]
-    "[variable-2 4. ][meta [ ]]][variable-2  [world]]]", // Valid; tests reference style links
-    "    [variable-3 1. ][property [x]]][variable-3  foo]",
-  ); // Valid; can be nested
+  MT("SHAEmphasis",
+     "[em *foo ][em&link be6a8cc1c1ecfe9489fb51e4869af15a13fc2cd2][em *]");
 
-  MT("SHA", "foo [link be6a8cc1c1ecfe9489fb51e4869af15a13fc2cd2] bar");
+  MT("shortSHA",
+     "foo [link be6a8cc] bar");
 
-  MT(
-    "SHAEmphasis",
-    "[em *foo ][em&link be6a8cc1c1ecfe9489fb51e4869af15a13fc2cd2][em *]",
-  );
+  MT("tooShortSHA",
+     "foo be6a8c bar");
 
-  MT("shortSHA", "foo [link be6a8cc] bar");
+  MT("longSHA",
+     "foo be6a8cc1c1ecfe9489fb51e4869af15a13fc2cd22 bar");
 
-  MT("tooShortSHA", "foo be6a8c bar");
+  MT("badSHA",
+     "foo be6a8cc1c1ecfe9489fb51e4869af15a13fc2cg2 bar");
 
-  MT("longSHA", "foo be6a8cc1c1ecfe9489fb51e4869af15a13fc2cd22 bar");
+  MT("userSHA",
+     "foo [link bar@be6a8cc1c1ecfe9489fb51e4869af15a13fc2cd2] hello");
 
-  MT("badSHA", "foo be6a8cc1c1ecfe9489fb51e4869af15a13fc2cg2 bar");
+  MT("userSHAEmphasis",
+     "[em *foo ][em&link bar@be6a8cc1c1ecfe9489fb51e4869af15a13fc2cd2][em *]");
 
-  MT(
-    "userSHA",
-    "foo [link bar@be6a8cc1c1ecfe9489fb51e4869af15a13fc2cd2] hello",
-  );
+  MT("userProjectSHA",
+     "foo [link bar/hello@be6a8cc1c1ecfe9489fb51e4869af15a13fc2cd2] world");
 
-  MT(
-    "userSHAEmphasis",
-    "[em *foo ][em&link bar@be6a8cc1c1ecfe9489fb51e4869af15a13fc2cd2][em *]",
-  );
+  MT("userProjectSHAEmphasis",
+     "[em *foo ][em&link bar/hello@be6a8cc1c1ecfe9489fb51e4869af15a13fc2cd2][em *]");
 
-  MT(
-    "userProjectSHA",
-    "foo [link bar/hello@be6a8cc1c1ecfe9489fb51e4869af15a13fc2cd2] world",
-  );
+  MT("wordSHA",
+     "ask for feedback")
 
-  MT(
-    "userProjectSHAEmphasis",
-    "[em *foo ][em&link bar/hello@be6a8cc1c1ecfe9489fb51e4869af15a13fc2cd2][em *]",
-  );
+  MT("num",
+     "foo [link #1] bar");
 
-  MT("num", "foo [link #1] bar");
+  MT("numEmphasis",
+     "[em *foo ][em&link #1][em *]");
 
-  MT("numEmphasis", "[em *foo ][em&link #1][em *]");
+  MT("badNum",
+     "foo #1bar hello");
 
-  MT("badNum", "foo #1bar hello");
+  MT("userNum",
+     "foo [link bar#1] hello");
 
-  MT("userNum", "foo [link bar#1] hello");
+  MT("userNumEmphasis",
+     "[em *foo ][em&link bar#1][em *]");
 
-  MT("userNumEmphasis", "[em *foo ][em&link bar#1][em *]");
+  MT("userProjectNum",
+     "foo [link bar/hello#1] world");
 
-  MT("userProjectNum", "foo [link bar/hello#1] world");
+  MT("userProjectNumEmphasis",
+     "[em *foo ][em&link bar/hello#1][em *]");
 
-  MT("userProjectNumEmphasis", "[em *foo ][em&link bar/hello#1][em *]");
+  MT("vanillaLink",
+     "foo [link http://www.example.com/] bar");
 
-  MT("vanillaLink", "foo [link http://www.example.com/] bar");
+  MT("vanillaLinkNoScheme",
+     "foo [link www.example.com] bar");
 
-  MT("vanillaLinkPunctuation", "foo [link http://www.example.com/]. bar");
+  MT("vanillaLinkHttps",
+     "foo [link https://www.example.com/] bar");
 
-  MT(
-    "vanillaLinkExtension",
-    "foo [link http://www.example.com/index.html] bar",
-  );
+  MT("vanillaLinkDataSchema",
+     "foo [link data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==] bar");
 
-  MT(
-    "vanillaLinkEmphasis",
-    "foo [em *][em&link http://www.example.com/index.html][em *] bar",
-  );
+  MT("vanillaLinkPunctuation",
+     "foo [link http://www.example.com/]. bar");
 
-  MT(
-    "notALink",
-    "[comment ```css]",
-    "[tag foo] {[property color]:[keyword black];}",
-    "[comment ```][link http://www.example.com/]",
-  );
+  MT("vanillaLinkExtension",
+     "foo [link http://www.example.com/index.html] bar");
 
-  MT("notALink", "[comment ``foo `bar` http://www.example.com/``] hello");
+  MT("vanillaLinkEmphasis",
+     "foo [em *][em&link http://www.example.com/index.html][em *] bar");
 
-  MT(
-    "notALink",
-    "[comment `foo]",
-    "[link http://www.example.com/]",
-    "[comment `foo]",
-    "",
-    "[link http://www.example.com/]",
-  );
+  MT("notALink",
+     "foo asfd:asdf bar");
 
-  MT(
-    "headerCodeBlockGithub",
-    "[header&header-1 # heading]",
-    "",
-    "[comment ```]",
-    "[comment code]",
-    "[comment ```]",
-    "",
-    "Commit: [link be6a8cc1c1ecfe9489fb51e4869af15a13fc2cd2]",
-    "Issue: [link #1]",
-    "Link: [link http://www.example.com/]",
-  );
+  MT("notALink",
+     "[comment ``foo `bar` http://www.example.com/``] hello");
 
-  MT("strikethrough", "[strikethrough ~~foo~~]");
+  MT("notALink",
+     "[comment `foo]",
+     "[comment&link http://www.example.com/]",
+     "[comment `] foo",
+     "",
+     "[link http://www.example.com/]");
 
-  MT("strikethroughWithStartingSpace", "~~ foo~~");
+  MT("strikethrough",
+     "[strikethrough ~~foo~~]");
 
-  MT("strikethroughUnclosedStrayTildes", "[strikethrough ~~foo~~~]");
+  MT("strikethroughWithStartingSpace",
+     "~~ foo~~");
 
-  MT("strikethroughUnclosedStrayTildes", "[strikethrough ~~foo ~~]");
+  MT("strikethroughUnclosedStrayTildes",
+    "[strikethrough ~~foo~~~]");
 
-  MT("strikethroughUnclosedStrayTildes", "[strikethrough ~~foo ~~ bar]");
+  MT("strikethroughUnclosedStrayTildes",
+     "[strikethrough ~~foo ~~]");
 
-  MT("strikethroughUnclosedStrayTildes", "[strikethrough ~~foo ~~ bar~~]hello");
+  MT("strikethroughUnclosedStrayTildes",
+    "[strikethrough ~~foo ~~ bar]");
 
-  MT("strikethroughOneLetter", "[strikethrough ~~a~~]");
+  MT("strikethroughUnclosedStrayTildes",
+    "[strikethrough ~~foo ~~ bar~~]hello");
 
-  MT("strikethroughWrapped", "[strikethrough ~~foo]", "[strikethrough foo~~]");
+  MT("strikethroughOneLetter",
+     "[strikethrough ~~a~~]");
 
-  MT(
-    "strikethroughParagraph",
-    "[strikethrough ~~foo]",
-    "",
-    "foo[strikethrough ~~bar]",
-  );
+  MT("strikethroughWrapped",
+     "[strikethrough ~~foo]",
+     "[strikethrough foo~~]");
 
-  MT(
-    "strikethroughEm",
-    "[strikethrough ~~foo][em&strikethrough *bar*][strikethrough ~~]",
-  );
+  MT("strikethroughParagraph",
+     "[strikethrough ~~foo]",
+     "",
+     "foo[strikethrough ~~bar]");
 
-  MT("strikethroughEm", "[em *][em&strikethrough ~~foo~~][em *]");
+  MT("strikethroughEm",
+     "[strikethrough ~~foo][em&strikethrough *bar*][strikethrough ~~]");
 
-  MT(
-    "strikethroughStrong",
-    "[strikethrough ~~][strong&strikethrough **foo**][strikethrough ~~]",
-  );
+  MT("strikethroughEm",
+     "[em *][em&strikethrough ~~foo~~][em *]");
 
-  MT(
-    "strikethroughStrong",
-    "[strong **][strong&strikethrough ~~foo~~][strong **]",
-  );
+  MT("strikethroughStrong",
+     "[strikethrough ~~][strong&strikethrough **foo**][strikethrough ~~]");
+
+  MT("strikethroughStrong",
+     "[strong **][strong&strikethrough ~~foo~~][strong **]");
+
+  MT("emoji",
+     "text [builtin :blush:] text [builtin :v:] text [builtin :+1:] text",
+     ":text text: [builtin :smiley_cat:]");
+
 })();

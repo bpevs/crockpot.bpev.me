@@ -1,48 +1,47 @@
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: http://codemirror.net/LICENSE
+// Distributed under an MIT license: https://codemirror.net/LICENSE
 
-(function (mod) {
-  if (typeof exports == "object" && typeof module == "object") { // CommonJS
+(function(mod) {
+  if (typeof exports == "object" && typeof module == "object") // CommonJS
     mod(require("../../lib/codemirror"));
-  } else if (typeof define == "function" && define.amd) { // AMD
+  else if (typeof define == "function" && define.amd) // AMD
     define(["../../lib/codemirror"], mod);
-  } // Plain browser env
-  else {
+  else // Plain browser env
     mod(CodeMirror);
-  }
-})(function (CodeMirror) {
-  "use strict";
+})(function(CodeMirror) {
+"use strict";
 
-  CodeMirror.defineMode("diff", function () {
-    var TOKEN_NAMES = {
-      "+": "positive",
-      "-": "negative",
-      "@": "meta",
-    };
+CodeMirror.defineMode("diff", function() {
 
-    return {
-      token: function (stream) {
-        var tw_pos = stream.string.search(/[\t ]+?$/);
+  var TOKEN_NAMES = {
+    '+': 'positive',
+    '-': 'negative',
+    '@': 'meta'
+  };
 
-        if (!stream.sol() || tw_pos === 0) {
-          stream.skipToEnd();
-          return ("error " + (
-            TOKEN_NAMES[stream.string.charAt(0)] || ""
-          )).replace(/ $/, "");
-        }
+  return {
+    token: function(stream) {
+      var tw_pos = stream.string.search(/[\t ]+?$/);
 
-        var token_name = TOKEN_NAMES[stream.peek()] || stream.skipToEnd();
+      if (!stream.sol() || tw_pos === 0) {
+        stream.skipToEnd();
+        return ("error " + (
+          TOKEN_NAMES[stream.string.charAt(0)] || '')).replace(/ $/, '');
+      }
 
-        if (tw_pos === -1) {
-          stream.skipToEnd();
-        } else {
-          stream.pos = tw_pos;
-        }
+      var token_name = TOKEN_NAMES[stream.peek()] || stream.skipToEnd();
 
-        return token_name;
-      },
-    };
-  });
+      if (tw_pos === -1) {
+        stream.skipToEnd();
+      } else {
+        stream.pos = tw_pos;
+      }
 
-  CodeMirror.defineMIME("text/x-diff", "diff");
+      return token_name;
+    }
+  };
+});
+
+CodeMirror.defineMIME("text/x-diff", "diff");
+
 });

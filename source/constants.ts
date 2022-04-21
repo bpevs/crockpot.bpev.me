@@ -1,6 +1,3 @@
-export const CLIENT_PORT = 3000;
-export const DB_PORT = 5432;
-
 export enum DB_EVENT_METHOD {
   CREATE = "CREATE",
   READ = "READ",

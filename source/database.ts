@@ -1,7 +1,7 @@
+import "https://deno.land/x/dotenv/load.ts";
 import { Pool } from "https://deno.land/x/postgres/mod.ts";
 import {
   DB_EVENT_METHOD as DB,
-  DB_PORT as port,
   DbEvent,
   DbResponse,
 } from "./constants.ts";
@@ -9,10 +9,11 @@ import {
 const POOL_CONNECTIONS = 3;
 
 const pool = new Pool({
-  database: "crockpot",
-  hostname: "localhost",
-  port,
-  user: "ben",
+  database: Deno.env.get("DB_DATABASE"),
+  hostname: Deno.env.get("DB_HOSTNAME"),
+  password: Deno.env.get("DB_PASSWORD"),
+  port: Deno.env.get("DB_PORT"),
+  user: Deno.env.get("DB_USER"),
 }, POOL_CONNECTIONS);
 
 // Connect to the database

@@ -7,7 +7,10 @@ export default async function handleHttp(req: Request): Promise<Response> {
   const pathname = new URL(req.url).pathname;
 
   try {
-    const filepath = pathname === "/" ? "index.html" : pathname;
+    let filepath = pathname;
+    if (pathname === "/") filepath = "index.html";
+    if (pathname === "/about") filepath = "about.html";
+
     const response = await serveFile(req, `./source/public/${filepath}`);
     return response;
   } catch {

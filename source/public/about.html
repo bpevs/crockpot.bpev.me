@@ -10,14 +10,20 @@
     <link rel="shortcut icon" type="image/png" href="/images/favicon.png" />
   </head>
   <body>
-    <script src="/scripts/wordlist.js"></script>
-    <script>
-      function randomWord() {
-        return window.words[Math.floor(Math.random() * window.words.length)];
-      };
-      const id = [randomWord(), randomWord()].join("-");
-      window.location.pathname = '/' + id;
-    </script>
-    <noscript>To use the Coding Crock-Pot, Javascript must be enabled!</noscript>
+    <p>
+      This site is created using Deno, Codemirror, Postgres, and Websockets.
+      It is hosted on fly.io
+    </p>
+    <p>
+      <a
+        href="https://www.flaticon.com/free-icons/rice-cooker"
+        title="rice cooker icons"
+        style="color: white;">
+        Rice cooker icon created by Freepik - Flaticon
+      </a>
+    </p>
+    <p>
+      <a style="color: white;" href="/">Back Home</a>
+    </p>
   </body>
 </html>

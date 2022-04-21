@@ -1,4 +1,4 @@
-import { v4 } from "https://deno.land/std/uuid/mod.ts";
+import { v4 } from "https://deno.land/std@0.136.0/uuid/mod.ts";
 
 import {
   CLIENT_EVENT_METHOD as CLIENT,

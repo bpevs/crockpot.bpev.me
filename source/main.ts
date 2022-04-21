@@ -1,5 +1,5 @@
 import "https://deno.land/x/dotenv/load.ts";
-import { serve } from "https://deno.land/std@0.135.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.136.0/http/server.ts";
 
 import handleHttp from "./handleHttp.ts";
 import handleWs from "./handleWs.ts";

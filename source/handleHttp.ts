@@ -1,5 +1,5 @@
-import { readableStreamFromReader } from "https://deno.land/std/streams/mod.ts";
-import { serveFile } from "https://deno.land/std@0.135.0/http/file_server.ts";
+import { readableStreamFromReader } from "https://deno.land/std@0.136.0/streams/mod.ts";
+import { serveFile } from "https://deno.land/std@0.136.0/http/file_server.ts";
 
 import { DB_EVENT_METHOD as DB } from "./constants.ts";
 import { queryDB } from "./database.ts";

@@ -8,7 +8,7 @@ kill_timeout = 5
 [env]
 
 [processes]
-  app = "deno run --allow-read --allow-env --allow-net source/main.ts"
+  app = "run --allow-read --allow-env --allow-net source/main.ts"
 
 [experimental]
   allowed_public_ports = []

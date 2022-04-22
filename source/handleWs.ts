@@ -33,6 +33,8 @@ export default function handleWebSockets(request: Request, socket: WebSocket) {
     const sessionId = new URL(request.url).pathname.split("/")[1];
     currUser.sessionId = sessionId;
     currSession.sessionId = sessionId;
+    currSession.text = text;
+    currSession.syntax = syntax;
     usersMap.set(currUserId, currUser);
     try {
       const queryResponse = await queryDB({ method: DB.READ, sessionId });

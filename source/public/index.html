@@ -19,7 +19,7 @@
         return window.foods[Math.floor(Math.random() * window.foods.length)];
       };
       const id = [randomAdj(), randomFood()].join("-");
-      window.location.pathname = '/' + id;
+      window.location.replace('/' + id);
     </script>
     <noscript>To use the Coding Crock-Pot, Javascript must be enabled!</noscript>
   </body>

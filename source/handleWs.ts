@@ -9,31 +9,32 @@ import { queryDB } from "./database.ts";
 
 interface User {
   userId: string;
-  sessionId: string;
   socket: WebSocket;
+  sessionId?: string;
 }
 const usersMap: Map<string, User> = new Map();
 
 // Types of changes we want to relay to active clients
 const updateOrigins = ["+input", "paste", "+delete", "undo", "cut", "redo"];
 
-export default function handleWebSockets(socket: WebSocket) {
+export default function handleWebSockets(request: Request, socket: WebSocket) {
   const currUserId = v4.generate();
-
-  socket.onclose = () => {
-    usersMap.delete(currUserId);
+  const currUser: User | void = {
+    userId: currUserId,
+    socket,
   };
+  const currSession: {
+    sessionId?: string;
+    syntax?: string;
+    text?: string;
+  } = {};
 
-  socket.onmessage = async (event: MessageEvent<string>) => {
-    let currUser: User | void;
-    const { change, method, sessionId, syntax, text } = JSON.parse(event.data);
-
-    switch (method) {
-      case CLIENT.INIT: {
-        currUser = { userId: currUserId, sessionId, socket };
-        usersMap.set(currUserId, currUser);
-
-        const queryResponse = await queryDB({ method: DB.READ, sessionId });
+  socket.onopen = async () => {
+    usersMap.set(currUserId, currUser);
+    const sessionId = new URL(request.url).pathname.split("/")[1];
+    try {
+      const queryResponse = await queryDB({ method: DB.READ, sessionId });
+      if (queryResponse) {
         return socket.send(JSON.stringify({
           method: CLIENT.INIT,
           sessionId: queryResponse.id,
@@ -41,8 +42,25 @@ export default function handleWebSockets(socket: WebSocket) {
           syntax: queryResponse.syntax || "text",
         }));
       }
+    } catch {
+      console.error("Could not read session", sessionId);
+    }
+  };
 
+  socket.onclose = () => {
+    usersMap.delete(currUserId);
+    if (usersMap.size === 0 && currSession.sessionId && !currSession.text) {
+      queryDB({ method: DB.DELETE, sessionId: currSession.sessionId });
+    }
+  };
+
+  socket.onmessage = (event: MessageEvent<string>) => {
+    const { change, method, sessionId, syntax, text } = JSON.parse(event.data);
+
+    switch (method) {
       case CLIENT.SAVE:
+        currSession.text = text;
+        currSession.syntax = syntax;
         return queryDB({ method: DB.UPDATE, sessionId, text, syntax });
 
       case CLIENT.CHANGE: {

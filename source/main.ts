@@ -8,13 +8,13 @@ const port = parseInt(Deno.env.get("CLIENT_PORT") || "8080");
 serve(handler, { port });
 console.log(`Server running on http://localhost:${port}/`);
 
-function handler(req: Request): Promise<Response> {
+function handler(request: Request): Promise<Response> {
   let response, socket: WebSocket;
   try {
-    ({ response, socket } = Deno.upgradeWebSocket(req));
+    ({ response, socket } = Deno.upgradeWebSocket(request));
   } catch {
-    return handleHttp(req);
+    return handleHttp(request);
   }
-  handleWs(socket);
+  handleWs(request, socket);
   return Promise.resolve(response);
 }

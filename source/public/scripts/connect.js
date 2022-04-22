@@ -1,12 +1,13 @@
 window.onload = function () {
   const location = document.location;
+  const sessionId = document.location.pathname.substring(1);
+
   let scheme = "ws";
   if (location.protocol === "https:") scheme += "s";
 
   const serverUrl = `${scheme}://${location.hostname}:${location.port}`;
-  const socket = new WebSocket(serverUrl);
+  const socket = new WebSocket([serverUrl, sessionId].join("/"));
 
-  const sessionId = window.location.pathname.substring(1);
   let editor;
 
   const el = {

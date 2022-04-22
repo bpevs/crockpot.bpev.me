@@ -13,6 +13,7 @@ interface User {
   sessionId?: string;
 }
 const usersMap: Map<string, User> = new Map();
+const saveSessionDebounced = debounce(saveSession, 1000);
 
 // Types of changes we want to relay to active clients
 const updateOrigins = ["+input", "paste", "+delete", "undo", "cut", "redo"];
@@ -66,9 +67,7 @@ export default function handleWebSockets(request: Request, socket: WebSocket) {
 
     switch (method) {
       case CLIENT.SAVE:
-        currSession.text = text;
-        currSession.syntax = syntax;
-        return queryDB({ method: DB.UPDATE, sessionId, text, syntax });
+        return saveSessionDebounced(currSession, sessionId, text, syntax);
 
       case CLIENT.CHANGE: {
         const changeResp: ClientEvent = { method: CLIENT.CHANGE, sessionId };
@@ -90,5 +89,38 @@ export default function handleWebSockets(request: Request, socket: WebSocket) {
         }
       }
     }
+  };
+}
+
+function saveSession(
+  currSession: any,
+  sessionId: any,
+  text: string,
+  syntax: string,
+) {
+  currSession.text = text;
+  currSession.syntax = syntax;
+  queryDB({ method: DB.UPDATE, sessionId, text, syntax });
+}
+
+function debounce(
+  func: (...args: (any | void)[]) => any | void,
+  wait: number,
+  immediate?: boolean,
+): (...args: (any | void)[]) => void {
+  let timer: number;
+
+  return function debounced(...args: any[]) {
+    const later = () => {
+      window.clearTimeout(timer);
+      if (!immediate) func.apply(null, args);
+    };
+
+    if (immediate && !timer) {
+      func.apply(null, args);
+    }
+
+    window.clearTimeout(timer);
+    timer = window.setTimeout(later, wait);
   };
 }

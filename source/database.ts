@@ -1,20 +1,18 @@
 import "dotenv";
-import { Pool } from "postgres";
+import { Client } from "postgres";
 
 import { DB_EVENT_METHOD as DB, DbEvent, DbResponse } from "./constants.ts";
 
-const POOL_CONNECTIONS = 3;
-
-const pool = new Pool({
+const client = new Client({
   database: Deno.env.get("DB_DATABASE"),
   hostname: Deno.env.get("DB_HOSTNAME"),
   password: Deno.env.get("DB_PASSWORD"),
   port: Deno.env.get("DB_PORT"),
   user: Deno.env.get("DB_USER"),
-}, POOL_CONNECTIONS);
+});
 
 export async function createTable() {
-  const client = await pool.connect();
+  await client.connect();
 
   try {
     await client.queryObject`
@@ -34,23 +32,23 @@ export async function createTable() {
       );
     `;
   } finally {
-    // Release the client back into the pool
-    client.release();
+    // end the client back into the pool
+    await client.end();
   }
 }
 
 export async function clearSessions() {
-  const client = await pool.connect();
+  await client.connect();
   try {
     await client.queryObject`TRUNCATE sessions CASCADE;`;
   } finally {
-    client.release();
+    await client.end();
   }
 }
 
 export async function queryDB(params: DbEvent): Promise<DbResponse | void> {
   const { method, sessionId: id, text, syntax } = params;
-  const client = await pool.connect();
+  await client.connect();
 
   const queries: Record<DB, string | null> = {
     [DB.CREATE]: "INSERT into sessions (id) VALUES ($ID) RETURNING *;",
@@ -66,7 +64,7 @@ export async function queryDB(params: DbEvent): Promise<DbResponse | void> {
     if (typeof queries[method] === "string") {
       const queryString = queries[method] as string;
       const result = await client.queryObject<DbResponse>(queryString, { id });
-      client.release();
+      await client.end();
       return result.rows[0];
     } else if (method === DB.UPDATE) {
       if (text === "") {
@@ -74,7 +72,7 @@ export async function queryDB(params: DbEvent): Promise<DbResponse | void> {
         const result = await client.queryObject<DbResponse>(queryString, {
           id,
         });
-        client.release();
+        await client.end();
         return result.rows[0];
       }
       let query = "UPDATE sessions SET";
@@ -87,7 +85,7 @@ export async function queryDB(params: DbEvent): Promise<DbResponse | void> {
         text,
         syntax,
       });
-      client.release();
+      await client.end();
       return result.rows[0];
     }
   } catch (e) {

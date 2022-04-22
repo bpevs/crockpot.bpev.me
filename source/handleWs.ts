@@ -30,8 +30,10 @@ export default function handleWebSockets(request: Request, socket: WebSocket) {
   } = {};
 
   socket.onopen = async () => {
-    usersMap.set(currUserId, currUser);
     const sessionId = new URL(request.url).pathname.split("/")[1];
+    currUser.sessionId = sessionId;
+    currSession.sessionId = sessionId;
+    usersMap.set(currUserId, currUser);
     try {
       const queryResponse = await queryDB({ method: DB.READ, sessionId });
       if (queryResponse) {
@@ -52,6 +54,9 @@ export default function handleWebSockets(request: Request, socket: WebSocket) {
     if (usersMap.size === 0 && currSession.sessionId && !currSession.text) {
       queryDB({ method: DB.DELETE, sessionId: currSession.sessionId });
     }
+    delete currSession.sessionId;
+    delete currSession.text;
+    delete currSession.syntax;
   };
 
   socket.onmessage = (event: MessageEvent<string>) => {

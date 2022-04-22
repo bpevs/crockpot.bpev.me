@@ -12,10 +12,13 @@
   <body>
     <script src="/scripts/wordlist.js"></script>
     <script>
-      function randomWord() {
-        return window.words[Math.floor(Math.random() * window.words.length)];
+      function randomAdj() {
+        return window.adjectives[Math.floor(Math.random() * window.adjectives.length)];
       };
-      const id = [randomWord(), randomWord()].join("-");
+      function randomFood() {
+        return window.foods[Math.floor(Math.random() * window.foods.length)];
+      };
+      const id = [randomAdj(), randomFood()].join("-");
       window.location.pathname = '/' + id;
     </script>
     <noscript>To use the Coding Crock-Pot, Javascript must be enabled!</noscript>

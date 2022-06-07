@@ -10,18 +10,7 @@ Think of this as a quick-access google docs with syntax highlighting. Built with
 
 # Usage
 
-You need to have [deno](https://deno.land) installed and [postgres db](https://www.postgresql.org) running to start this app.
-
-Create and fill out a `.env` file, based on `.env.example`.
-
-```
-CLIENT_PORT=8080
-DB_DATABASE="crockpot"
-DB_HOSTNAME="localhost"
-DB_PASSWORD=""
-DB_PORT=5432
-DB_USER="ben"
-```
+You need to have [deno](https://deno.land) installed to start this app.
 
 You can run `make watch` to start the server. You can access at http://localhost:{CLIENT_PORT}
 

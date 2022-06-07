@@ -1,5 +1,7 @@
 import { DB_EVENT_METHOD as DB, DbEvent, DbResponse } from "./constants.ts";
 
+const storage = {};
+
 export function queryDB(params: DbEvent): DbResponse | void {
   const { method, sessionId: id, text, syntax } = params;
 
@@ -7,19 +9,16 @@ export function queryDB(params: DbEvent): DbResponse | void {
   if (method === DB.DELETE) console.log("Deleting Session: ", id);
 
   if (method === DB.CREATE) {
-    sessionStorage.setItem(id, JSON.stringify({ id, text, syntax }));
+    storage[id] = { id, text, syntax };
   } else if (method === DB.READ) {
-    const session = sessionStorage.getItem(id);
-    if (session) return JSON.parse(session);
+    return storage[id];
   } else if (method === DB.DELETE) {
-    sessionStorage.removeItem(id);
+    delete storage[id];
   } else if (method === DB.UPDATE) {
-    const sessionStr = sessionStorage.getItem(id);
-    if (!sessionStr) return;
-
-    const session = JSON.parse(sessionStr);
+    const session = storage[id];
+    if (!session) return;
     if (text) session.text = text;
     if (syntax) session.syntax = syntax;
-    sessionStorage.setItem(id, JSON.stringify(session));
+    storage[id] = session;
   }
 }

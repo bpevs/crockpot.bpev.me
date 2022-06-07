@@ -1,6 +1,12 @@
 import { DB_EVENT_METHOD as DB, DbEvent, DbResponse } from "./constants.ts";
 
-const storage = {};
+const storage: {
+  [id: string]: {
+    id: string;
+    text?: string;
+    syntax?: string;
+  }
+} = {};
 
 export function queryDB(params: DbEvent): DbResponse | void {
   const { method, sessionId: id, text, syntax } = params;

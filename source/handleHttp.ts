@@ -1,7 +1,7 @@
 import { serveFile } from "std/file_server";
 
 import { DB_EVENT_METHOD as DB } from "./constants.ts";
-import { createTable, queryDB } from "./database.ts";
+import { queryDB } from "./database.ts";
 
 export default async function handleHttp(req: Request): Promise<Response> {
   const pathname = new URL(req.url).pathname;
@@ -11,7 +11,6 @@ export default async function handleHttp(req: Request): Promise<Response> {
     if (pathname === "/") filepath = "index.html";
     if (pathname === "/about") filepath = "about.html";
     if (pathname === "/clear-all") {
-      createTable();
       filepath = "about.html";
     }
 
@@ -22,11 +21,11 @@ export default async function handleHttp(req: Request): Promise<Response> {
     const [_, sessionId, clear] = pathname.split("/");
     const shouldClear = clear === "clear";
 
-    const existingSession = await queryDB({ method: DB.READ, sessionId });
+    const existingSession = queryDB({ method: DB.READ, sessionId });
     if (!existingSession) {
-      await queryDB({ method: DB.CREATE, sessionId });
+      queryDB({ method: DB.CREATE, sessionId });
     } else if (shouldClear) {
-      await queryDB({ method: DB.DELETE, sessionId });
+      queryDB({ method: DB.DELETE, sessionId });
     }
     return serveFile(req, `./source/public/code.html`);
   }

@@ -5,7 +5,7 @@ const storage: {
     id: string;
     text?: string;
     syntax?: string;
-  }
+  };
 } = {};
 
 export function queryDB(params: DbEvent): DbResponse | void {

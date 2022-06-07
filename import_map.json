@@ -1,7 +1,7 @@
 {
   "imports": {
     "dotenv": "https://deno.land/x/dotenv/load.ts",
-    "postgres": "https://deno.land/x/postgres/mod.ts",
+    "std/async": "https://deno.land/std@0.136.0/async/mod.ts",
     "std/file_server": "https://deno.land/std@0.136.0/http/file_server.ts",
     "std/server": "https://deno.land/std@0.136.0/http/server.ts",
     "std/uuid": "https://deno.land/std@0.136.0/uuid/mod.ts"

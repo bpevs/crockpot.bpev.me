@@ -10,11 +10,9 @@ export default async function handleHttp(req: Request): Promise<Response> {
     let filepath = pathname;
     if (pathname === "/") filepath = "index.html";
     if (pathname === "/about") filepath = "about.html";
-    if (pathname === "/clear-all") {
-      filepath = "about.html";
-    }
+    if (pathname === "/clear-all") filepath = "about.html";
 
-    const response = await serveFile(req, `./source/public/${filepath}`);
+    const response = await serveFile(req, `./public/${filepath}`);
     return response;
   } catch {
     // If not a file, assume is sessionId
@@ -27,6 +25,6 @@ export default async function handleHttp(req: Request): Promise<Response> {
     } else if (shouldClear) {
       queryDB({ method: DB.DELETE, sessionId });
     }
-    return serveFile(req, `./source/public/code.html`);
+    return serveFile(req, `./public/code.html`);
   }
 }

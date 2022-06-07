@@ -1,13 +1,13 @@
 {
   "fmt": {
     "files": {
-      "exclude": ["source/public/lib"]
+      "exclude": ["public/lib"]
     }
   },
   "importMap": "import_map.json",
   "lint": {
     "files": {
-      "exclude": ["source/public/lib"]
+      "exclude": ["public/lib"]
     }
   }
 }

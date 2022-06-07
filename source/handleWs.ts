@@ -1,3 +1,4 @@
+import { debounce } from "std/async";
 import { v4 } from "std/uuid";
 
 import {
@@ -12,8 +13,15 @@ interface User {
   socket: WebSocket;
   sessionId?: string;
 }
+
+interface Session {
+  sessionId?: string;
+  syntax?: string;
+  text?: string;
+}
+
 const usersMap: Map<string, User> = new Map();
-const saveSessionDebounced = debounce(saveSession, 1000);
+const saveSessionDebounced = debounce(saveSession, 500);
 
 // Types of changes we want to relay to active clients
 const updateOrigins = ["+input", "paste", "+delete", "undo", "cut", "redo"];
@@ -24,11 +32,7 @@ export default function handleWebSockets(request: Request, socket: WebSocket) {
     userId: currUserId,
     socket,
   };
-  const currSession: {
-    sessionId?: string;
-    syntax?: string;
-    text?: string;
-  } = {};
+  const currSession: Session = {};
 
   socket.onopen = async () => {
     const sessionId = new URL(request.url).pathname.split("/")[1];
@@ -54,9 +58,11 @@ export default function handleWebSockets(request: Request, socket: WebSocket) {
 
   socket.onclose = () => {
     usersMap.delete(currUserId);
-    if (usersMap.size === 0 && currSession.sessionId && !currSession.text) {
-      queryDB({ method: DB.DELETE, sessionId: currSession.sessionId });
-    }
+    globalThis.setTimeout(() => {
+      if (usersMap.size === 0 && currSession.sessionId && !currSession.text) {
+        queryDB({ method: DB.DELETE, sessionId: currSession.sessionId });
+      }
+    }, 5000);
     delete currSession.sessionId;
     delete currSession.text;
     delete currSession.syntax;
@@ -93,34 +99,12 @@ export default function handleWebSockets(request: Request, socket: WebSocket) {
 }
 
 function saveSession(
-  currSession: any,
-  sessionId: any,
+  currSession: Session,
+  sessionId: string,
   text: string,
   syntax: string,
 ) {
   currSession.text = text;
   currSession.syntax = syntax;
   queryDB({ method: DB.UPDATE, sessionId, text, syntax });
-}
-
-function debounce(
-  func: (...args: (any | void)[]) => any | void,
-  wait: number,
-  immediate?: boolean,
-): (...args: (any | void)[]) => void {
-  let timer: number;
-
-  return function debounced(...args: any[]) {
-    const later = () => {
-      window.clearTimeout(timer);
-      if (!immediate) func.apply(null, args);
-    };
-
-    if (immediate && !timer) {
-      func.apply(null, args);
-    }
-
-    window.clearTimeout(timer);
-    timer = window.setTimeout(later, wait);
-  };
 }
